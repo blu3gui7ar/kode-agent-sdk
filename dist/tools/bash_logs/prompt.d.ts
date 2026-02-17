@@ -1,0 +1,2 @@
+export declare const DESCRIPTION = "Get output from a background bash shell";
+export declare const PROMPT = "Fetch stdout/stderr from a background bash session started via bash_run with \"background\": true.\n\nGuidelines:\n- Provide the shell_id returned by bash_run to retrieve incremental logs.\n- Check the status to see if the process is still running or completed.\n- Output includes both stdout and stderr streams.\n\nSafety/Limitations:\n- Only processes started in the current session are accessible.\n- Process history is not persisted across SDK restarts.";
