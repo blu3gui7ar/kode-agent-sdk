@@ -1,0 +1,2 @@
+export declare const DESCRIPTION = "Kill a background bash shell";
+export declare const PROMPT = "Terminate a long-running background bash session identified by shell_id.\n\nGuidelines:\n- Use this to clean up stuck processes.\n- Provide the shell_id from bash_run to terminate that specific process.\n- Once killed, the process cannot be restarted or accessed.\n\nSafety/Limitations:\n- Only background processes started in the current session can be killed.\n- Force termination may leave incomplete work or locks.";
