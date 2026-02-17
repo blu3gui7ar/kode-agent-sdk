@@ -45,7 +45,7 @@ export interface ModelResponse {
  * All providers emit chunks in this format.
  */
 export interface ModelStreamChunk {
-  type: 'content_block_start' | 'content_block_delta' | 'content_block_stop' | 'message_delta' | 'message_stop';
+  type: 'content_block_start' | 'content_block_delta' | 'content_block_stop' | 'message_start' | 'message_delta' | 'message_stop';
   index?: number;
   content_block?: ContentBlock;
   delta?: {
@@ -55,7 +55,7 @@ export interface ModelStreamChunk {
   };
   usage?: {
     input_tokens?: number;
-    output_tokens: number;
+    output_tokens?: number;
   };
 }
 
