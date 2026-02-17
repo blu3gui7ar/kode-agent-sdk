@@ -227,8 +227,13 @@ export class AnthropicProvider implements ModelProvider {
             yield { type: 'content_block_delta', index: event.index, delta };
           } else if (event.type === 'content_block_stop') {
             yield { type: 'content_block_stop', index: event.index };
+          } else if (event.type === 'message_start') {
+            const usage = event.message?.usage;
+            if (usage) {
+              yield { type: 'message_start', usage: { input_tokens: usage.input_tokens } };
+            }
           } else if (event.type === 'message_delta') {
-            yield { type: 'message_delta', delta: event.delta, usage: event.usage };
+            yield { type: 'message_delta', delta: event.delta, usage: { output_tokens: event.usage?.output_tokens } };
           } else if (event.type === 'message_stop') {
             yield { type: 'message_stop' };
           }

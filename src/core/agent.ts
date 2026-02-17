@@ -1034,6 +1034,7 @@ export class Agent {
       let currentToolBuffer = '';
       const textBuffers = new Map<number, string>();
       const reasoningBuffers = new Map<number, string>();
+      let pendingInputTokens = 0;
 
       for await (const chunk of stream) {
         if (chunk.type === 'content_block_start') {
@@ -1098,9 +1099,14 @@ export class Agent {
               // continue buffering
             }
           }
+        } else if (chunk.type === 'message_start') {
+          if (chunk.usage?.input_tokens) {
+            pendingInputTokens = chunk.usage.input_tokens;
+          }
         } else if (chunk.type === 'message_delta') {
-          const inputTokens = (chunk.usage as any)?.input_tokens ?? 0;
-          const outputTokens = (chunk.usage as any)?.output_tokens ?? 0;
+          const inputTokens = pendingInputTokens;
+          pendingInputTokens = 0;
+          const outputTokens = chunk.usage?.output_tokens ?? 0;
           if (inputTokens || outputTokens) {
             this.events.emitMonitor({
               channel: 'monitor',
