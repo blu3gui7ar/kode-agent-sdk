@@ -418,14 +418,13 @@ export class OpenAIProvider implements ModelProvider {
     function* flushToolCalls(): Generator<ModelStreamChunk> {
       if (toolCallBuffers.size === 0) return;
       const entries = Array.from(toolCallBuffers.entries()).sort((a, b) => a[0] - b[0]);
-      let continuousIndex = 1;
-      for (const [, call] of entries) {
+      for (const [index, call] of entries) {
         yield {
           type: 'content_block_start',
-          index: continuousIndex,
+          index,
           content_block: {
             type: 'tool_use',
-            id: call.id ?? `toolcall-${continuousIndex}`,
+            id: call.id ?? `toolcall-${index}`,
             name: call.name ?? 'tool',
             input: {},
           },
@@ -433,12 +432,11 @@ export class OpenAIProvider implements ModelProvider {
         if (call.args) {
           yield {
             type: 'content_block_delta',
-            index: continuousIndex,
+            index,
             delta: { type: 'input_json_delta', partial_json: call.args },
           };
         }
-        yield { type: 'content_block_stop', index: continuousIndex };
-        continuousIndex++;
+        yield { type: 'content_block_stop', index };
       }
       toolCallBuffers.clear();
     }
