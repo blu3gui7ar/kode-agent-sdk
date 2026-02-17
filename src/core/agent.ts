@@ -1136,14 +1136,16 @@ export class Agent {
 
       const originalBlocks = assistantBlocks;
       const storedBlocks = this.retainThinking
-        ? originalBlocks
-        : originalBlocks.filter((block) => block.type !== 'reasoning');
+        ? originalBlocks.filter((b): b is ContentBlock => b != null)
+        : originalBlocks.filter((block): block is ContentBlock => block != null && block.type !== 'reasoning');
       const metadata = this.buildMessageMetadata(originalBlocks, storedBlocks, this.retainThinking ? 'provider' : 'omit');
 
       this.messages.push({ role: 'assistant', content: storedBlocks, metadata });
       await this.persistMessages();
 
-      const toolBlocks = assistantBlocks.filter((block) => block.type === 'tool_use');
+      const toolBlocks = assistantBlocks.filter((block): block is ContentBlock => 
+        block != null && block.type === 'tool_use'
+      );
       if (toolBlocks.length > 0) {
         this.setBreakpoint('TOOL_PENDING');
         const outcomes = await this.executeTools(toolBlocks);
@@ -1805,11 +1807,12 @@ export class Agent {
       config.reasoningTransport ??
       (config.provider === 'openai' || config.provider === 'gemini' ? 'text' : 'provider');
     if (transport !== 'text') {
-      return blocks;
+      return blocks.filter((b): b is ContentBlock => b != null);
     }
 
     const output: ContentBlock[] = [];
     for (const block of blocks) {
+      if (block == null) continue;
       if (block.type !== 'text') {
         output.push(block);
         continue;
