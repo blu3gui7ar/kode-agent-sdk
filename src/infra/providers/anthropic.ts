@@ -89,7 +89,7 @@ export class AnthropicProvider implements ModelProvider {
     };
 
     if (opts?.temperature !== undefined) body.temperature = opts.temperature;
-    if (opts?.system) body.system = opts.system;
+    if (opts?.system) body.system = [{ 'type': 'text', 'text': opts.system }];
     if (opts?.tools && opts.tools.length > 0) body.tools = opts.tools;
 
     const thinkingConfig = opts?.thinking ?? this.thinking;
@@ -152,7 +152,7 @@ export class AnthropicProvider implements ModelProvider {
     };
 
     if (opts?.temperature !== undefined) body.temperature = opts.temperature;
-    if (opts?.system) body.system = opts.system;
+    if (opts?.system) body.system = [{ 'type': 'text', 'text': opts.system }];
     if (opts?.tools && opts.tools.length > 0) body.tools = opts.tools;
 
     const thinkingConfig = opts?.thinking ?? this.thinking;
